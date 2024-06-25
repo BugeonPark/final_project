@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+<mapper namespace="com.sds.weatherstory.model.food.FoodTasteDAO">
+	
+	<insert id="insert" parameterType="FoodTaste">
+		insert into food_taste(food_idx, taste_idx) values(#{food.food_idx}, #{taste.taste_idx})
+	</insert>
+	
+	<resultMap type="FoodTaste" id="FoodTasteMap">
+		<id column="food_taste_idx" property="food_taste_idx"/>
+		<association column="taste_idx" property="taste" javaType="Taste"
+			select="com.sds.weatherstory.model.food.TasteDAO.selectByIdx"/>
+	</resultMap>
+	
+	<select id="selectByFoodIdx" parameterType="int" resultMap="FoodTasteMap">
+		select * from food_taste where food_idx = #{food_idx}
+	</select>
+</mapper>

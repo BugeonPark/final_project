@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+<mapper namespace="com.sds.weatherstory.model.food.FoodDAO">
+	
+	<select id="selectAll" resultType="Food">
+		select * from food
+	</select>
+	
+	<insert id="insert" parameterType="Food">
+	
+		insert into food(food_name, food_category_idx)
+		values(#{food_name}, #{foodCategory.food_category_idx})
+		
+		<selectKey keyColumn="food_idx" resultType="int" keyProperty="food_idx" order="AFTER">
+			select last_insert_id() as food_idx		
+		</selectKey>
+	</insert>
+	
+	<resultMap type="Food" id="FoodMap">
+		<id column="food_idx" property="food_idx"/>
+		
+		<result column="food_name" property="food_name"/>
+		<association column="food_category_idx" property="foodCategory" 
+			javaType="FoodCategory" select="com.sds.weatherstory.model.food.FoodCategoryDAO.selectByIdx"/>
+		<collection column="food_idx" property="tastes" javaType="java.util.List"
+			ofType="FoodTaste" select="com.sds.weatherstory.model.food.FoodTasteDAO.selectByFoodIdx"/>
+	</resultMap>
+	
+	<select id="selectByFoodIdx" parameterType="int" resultMap="FoodMap">
+		select * from food where food_idx=#{food_idx}
+	</select>
+	
+	<!-- 날씨 맑음 : description_idx=1
+		습도 보통 : humidity_idx = 2
+		기온 보통 : temp_idx = 2 -->
+		
+	
+	
+	<select id="selectByWeather" parameterType="java.util.Map" resultMap="FoodMap">
+		select * from food f
+		left join food_temp ft on f.food_idx=ft.food_idx
+		left join food_description fd on f.food_idx=fd.food_idx
+		left join food_humidity fh on f.food_idx = fh.food_idx
+		where fd.description_idx=#{description_idx} and ft.temp_idx=#{temp_idx} and fh.humidity_idx=#{humidity_idx}
+	</select>
+	
+		
+	<!-- <resultMap type="Food" id="FoodMap">
+		<id column="food_idx" property="food_idx"/>
+		<result column="food_name" property="food_name"/>
+		
+		<collection column="food_idx" property="humidities" javaType="java.util.List"
+		 ofType="FoodHumidity" select="com.sds.weatherapp.model.food.FoodHumidity.selectByFoodIdx"/>
+		 
+		 <collection column="food_idx" property="temps" javaType="java.util.List"
+		 ofType="FoodTemp" select="com.sds.weatherapp.model.food.FoodTemp.selectByFoodIdx"/>
+		 
+		 <collection column="food_idx" property="descriptions" javaType="java.util.List"
+		 ofType="FoodDescription" select="com.sds.weatherapp.model.food.FoodTemp.selectByFoodIdx"/>
+	</resultMap> -->
+</mapper>

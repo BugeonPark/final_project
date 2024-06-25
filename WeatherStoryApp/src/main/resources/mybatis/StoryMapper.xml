@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+<mapper namespace="com.sds.weatherstory.model.local.StoryDAO">
+
+	<insert id="insert" parameterType="Story">
+		insert into story(member_idx,
+		content, filename, place_name, road_address, dong, x, y)
+		values(#{member.member_idx}, #{content}, #{filename}, #{place_name},
+		#{roadAddress}, #{dong}, #{x}, #{y})
+	</insert>
+
+	<select id="selectByMember" parameterType="String"
+		resultType="Story">
+		select DISTINCT place_name,x,y from story where
+		dong=#{dong}
+	</select>
+
+	<select id="selectByXY" parameterType="Story" resultType="Story">
+		select
+		* from story where x = #{x} and y = #{y}
+	</select>
+
+	<resultMap type="Story" id="StoryMap">
+		<id column="story_idx" property="story_idx" />
+		<result column="content" property="content" />
+		<result column="filename" property="filename" />
+		<result column="place_name" property="place_name" />
+		<result column="road_address" property="roadAddress" />
+		<result column="dong" property="dong" />
+		<result column="x" property="x" />
+		<result column="y" property="y" />
+		<association column="member_idx" property="member"
+			javaType="Member"
+			select="com.sds.weatherstory.model.member.MemberDAO.selectByMemberIdx" />
+
+
+	</resultMap>
+	<select id="selectByPlaceName" parameterType="String"
+		resultMap="StoryMap">
+		select * from story where place_name=#{place_name} order by hit desc
+	</select>
+
+	<!-- story_idx를 조건으로 받아서 hit 값을 1씩 증가시킴 -->
+	<update id="updateHit" parameterType="int">
+		update story set hit =
+		hit+1 where story_idx=#{story_idx}
+	</update>
+
+	<!-- story_idx를 조건으로 받아서 hit 값을 1씩 감소시킴 -->
+	<update id="downHit" parameterType="int">
+		update story set hit = hit-1
+		where story_idx=#{story_idx}
+	</update>
+
+	<!-- Likey 테이블의 association을 위해 추가 -->
+	<select id="selectByStoryIdx" parameterType="int"
+		resultMap="StoryMap">
+		select * from story where story_idx=#{story_idx}
+	</select>
+
+	<!-- pk를 통해 hit 값 조회 -->
+	<select id="selectHit" parameterType="int" resultType="int">
+		select hit
+		from story where story_idx=#{story_idx}
+	</select>
+</mapper>
