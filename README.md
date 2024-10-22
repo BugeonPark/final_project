@@ -8,3 +8,5 @@
 
 ## Architecture
 ![스크린샷 2024-10-22 오후 12 55 57](https://github.com/user-attachments/assets/55c30c96-8801-48c0-abbc-e17aa6b0a52f)
+
+## ERD
