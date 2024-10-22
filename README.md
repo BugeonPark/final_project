@@ -7,4 +7,4 @@
   - 사용자가 위치, 날씨, 선호도를 바탕으로 음식과 식당을 추천해주고, 이용한 장소들에 대해 내용을 공유할 수 있는 웹 어플리케이션.
 
 ## Architecture
-![v4 0 0My Review]
+![v4 0 0My Review](https://drive.google.com/file/d/1VEaDciaid3nfbPaEqwSeAztVvYZEppu4/view?usp=drive_link)
