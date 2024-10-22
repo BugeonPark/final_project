@@ -10,3 +10,4 @@
 ![스크린샷 2024-10-22 오후 12 55 57](https://github.com/user-attachments/assets/55c30c96-8801-48c0-abbc-e17aa6b0a52f)
 
 ## ERD
+![스크린샷 2024-10-22 오후 3 10 24](https://github.com/user-attachments/assets/a7ed74f7-dc40-4412-aa75-afa971370213)
