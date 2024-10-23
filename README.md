@@ -81,7 +81,7 @@
 <summary>2. MSA 환경</summary>  
 
   ### API Gateway
-  ## Spring cloud gateway VS Spring cloud Zuul
+  #### Spring cloud gateway VS Spring cloud Zuul
   - 
   
 </details>
