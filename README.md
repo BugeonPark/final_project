@@ -35,7 +35,7 @@
 ## Description
 
 🔎 목차
-  - [Spring security를 적용한 OAuth2 & JWT 기반 로그인 기능](#oauth2--jwt-기반-로그인-기능)
+  - [Spring security를 적용한 OAuth2 & JWT 기반 로그인 기능](#spring-security를-적용한-oauth2--jwt-기반-로그인-기능)
   - [N+1 문제 해결](#n1-문제-해결)
 
 ---
