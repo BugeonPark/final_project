@@ -41,7 +41,7 @@
   - [Mybatis 사용](#mybatis-사용)
   - [MongoDB의 사용 이유](#mongodb-사용-이유)
   - [Vue.js와 Thymeleaf](#vue-js-thymeleaf)
-  - [배포](#배포)
+  - [배포](#배포)
   - [코드 설계](#코드-설계)
 
 ---
@@ -65,4 +65,9 @@
 - 결과적으로, 세션과 토큰 방식의 장단점을 비교했을 때, MSA 구축을 위해 JWT 방식을 선택하게 됐습니다.
 - UsernamePasswordAuthenticationFilter를 재정의 하여 JWT 안중 필요한 자원의 사용을 가능하게 하였습니다.
 
+
+## Vue.js와 Thymeleaf
+
+**1. Vue.js**
+- ㅁㄴㅇㄹㅁㄴㅇㄹㅁㄴㅇㄹ
 
