@@ -65,6 +65,7 @@
 - 결과적으로, 세션과 토큰 방식의 장단점을 비교했을 때, MSA 구축을 위해 JWT 방식을 선택하게 됐습니다.
 - UsernamePasswordAuthenticationFilter를 재정의 하여 JWT 안중 필요한 자원의 사용을 가능하게 하였습니다.
 
+</br>
 
 ## 화면 렌더링
 
