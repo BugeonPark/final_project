@@ -40,7 +40,7 @@
   - [Spring security를 적용한 OAuth2 & JWT 기반 로그인 기능](#spring-security를-적용한-oauth2--jwt-기반-로그인-기능)
   - [Mybatis 사용](#mybatis-사용)
   - [MongoDB의 사용 이유](#mongodb-사용-이유)
-  - [Vue.js와 Thymeleaf](#vue.js-thymeleaf)
+  - [Vue.js와 Thymeleaf](#vue.js와-thymeleaf)
   - [배포](#배포)
   - [코드 설계](#코드-설계)
 
