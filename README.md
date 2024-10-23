@@ -35,7 +35,7 @@
 ## Description
 
 🔎 목차
-  - [MSA 적용](#msa-적용)
+  - [MSA 구축](#msa-구축)
   - [RDB 설계 이유](#rdb-설계-이유)
   - [Spring security를 적용한 OAuth2 & JWT 기반 로그인 기능](#spring-security를-적용한-oauth2--jwt-기반-로그인-기능)
   - [Mybatis 사용](#mybatis-사용)
@@ -45,6 +45,25 @@
   - [코드 설계](#코드-설계)
 
 ---
+
+## MSA 구축
+
+두 개의 독립적인 프로젝트를 MSA로 구성하였습니다.
+프로젝트 규모상 모놀리식 아키텍처로 개발하는 것이 더 유리하지만, 학습이 가장 큰 목표이기 때문에 MSA로 개발을 하였습니다.
+
+<details>
+<summary>1. MSA(Mycroservice Architecture) vs MA(Monolithic Architecture)</summary>
+- MSA의 장점
+  - 각 서비스가 독립적으로 배포되고 확장이 가능하여 확장과 유지보수가 뛰어납니다.
+  - 일부 서비스가 다운되더라도 전체 다른 서비스에 영향을 미치지 않습니다.
+- MSA의 단점
+- MA의 장점
+  - 초기 개발에 유리하며 빠르게 개발이 가능합니다.
+  - 복잡한 통신 과정이 필요 없습니다.
+  - 하나의 프로세스 내에서 모든 컴포넌트가 실행이 되기 때문에 규모가 작은 프로젝트의 경우 성능이 더 뛰어납니다.
+</details>
+
+2. 
 
 ## Spring security를 적용한 OAuth2 & JWT 기반 로그인 기능
 
