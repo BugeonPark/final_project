@@ -35,15 +35,15 @@
 ## Description
 
 🔎 목차
-  - [OAuth2 & JWT 기반 로그인 기능](#oauth2--jwt-기반-로그인-기능)
+  - [Spring security를 적용한 OAuth2 & JWT 기반 로그인 기능](#oauth2--jwt-기반-로그인-기능)
   - [N+1 문제 해결](#n1-문제-해결)
 
 ---
 
-## OAuth2 & JWT 기반 로그인 기능
+## Spring security를 적용한 OAuth2 & JWT 기반 로그인 기능
 
 **1. 로그인 기능 구현**
-- OAuth2와 JWT 기반의 로그인 기능을 구현했습니다.
+- Spring security를 적용하여 OAuth2와 JWT 기반의 로그인 기능을 구현했습니다.
 - OAuth2 도입 이유는 간편 로그인을 통해 사용자 정보를 직접 관리할 필요가 없어지므로 보안에 신경을 줄일 수 있습니다. 이로 인해 다른 기능 개발에 더 몰입할 수 있기 때문입니다.
 
 **2. 세션과 JWT 비교**
