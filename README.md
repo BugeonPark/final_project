@@ -39,7 +39,7 @@
   - [RDB 설계 이유](#rdb-설계-이유)
   - [Spring security를 적용한 OAuth2 & JWT 기반 로그인 기능](#spring-security를-적용한-oauth2--jwt-기반-로그인-기능)
   - [Mybatis 사용](#mybatis-사용)
-  - [MongoDB의 사용 이유](#mongodb-사용-이유)
+  - [MongoDB의 사용 이유](#mongodb의-사용-이유)
   - [화면 렌더링](#화면-렌더링)
   - [배포](#배포)
   - [코드 설계](#코드-설계)
