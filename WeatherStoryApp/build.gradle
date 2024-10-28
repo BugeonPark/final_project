@@ -1,0 +1,83 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.1'
+	id 'io.spring.dependency-management' version '1.1.5'
+}
+
+group = 'com.sds.weatherstory'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+apply plugin: 'war'
+
+war{
+    archiveFileName = 'WeatherStoryApp.war' // 생성할 WAR 파일명 설정
+    exclude '**/spring-boot-starter-tomcat/**' // 내장 톰캣 관련 의존성 제외	
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('springCloudVersion', "2023.0.1")
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	
+	//config server 클라이언트 관련
+	implementation 'org.springframework.cloud:spring-cloud-starter-config'
+	//Eureka server 클라이언트 관련
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	
+	//스프링시큐리티
+	implementation 'org.springframework.boot:spring-boot-starter-security:3.2.5'
+	//mysql driver
+	implementation 'mysql:mysql-connector-java:8.0.28'
+	//spring jdbc
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc:3.2.4'
+	//mybatis spring
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+	//json simple(String -> json으로)
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+	
+	//Gson
+	implementation 'com.google.code.gson:gson:2.8.9'
+	
+	//io.jsonwebtoken. jwt 토큰 생성하는
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	implementation 'javax.xml.ws:jaxws-api:2.3.1'
+	implementation 'com.sun.xml.ws:jaxws-rt:2.3.3'
+	implementation 'com.sun.xml.messaging.saaj:saaj-impl:1.5.3'
+	implementation 'com.sun.xml.bind:jaxb-impl:2.3.3'
+	
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat' // 톰캣 제공 런타임 설정
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

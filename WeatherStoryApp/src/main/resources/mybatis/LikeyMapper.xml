@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+<mapper namespace="com.sds.weatherstory.model.local.LikeyDAO">
+
+	<!-- 누가, 어떤 스토리를 추천했는지 기록 -->
+	<insert id="insert" parameterType="Likey">
+		insert into likey(member_idx, story_idx)
+		values(#{member.member_idx}, #{story.story_idx})
+	</insert>
+
+
+	<resultMap type="Likey" id="LikeyMap">
+		<id column="like_idx" property="like_idx" />
+		<association column="member_idx" property="member"
+			javaType="Member"
+			select="com.sds.weatherstory.model.member.MemberDAO.selectByMemberIdx" />
+		<association column="story_idx" property="story"
+			javaType="Story"
+			select="com.sds.weatherstory.model.local.StoryDAO.selectByStoryIdx" />
+	</resultMap>
+
+
+	<!-- A가 스토리 B를 추천한 기록이 있는지 조회 -->
+	<select id="select" parameterType="Likey" resultMap="LikeyMap">
+		select like_idx, member_idx, story_idx from likey where story_idx =
+		#{story.story_idx} and member_idx = #{member.member_idx}
+	</select>
+
+	<!-- 추천 기록 삭제 -->
+	<delete id="delete" parameterType="Likey">
+		delete from likey where story_idx = #{story.story_idx} and member_idx =
+		#{member.member_idx}
+	</delete>
+
+</mapper>
+

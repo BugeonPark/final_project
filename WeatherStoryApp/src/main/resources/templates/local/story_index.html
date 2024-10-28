@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zxx" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<title>Makaan - Real Estate HTML Template</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="" name="keywords">
+<meta content="" name="description">
+
+<th:block th:replace="~{fragments/header_link :: header_link}" />
+<script type="text/javascript"
+	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=427d0f844a8f37000709d457d3f98426&libraries=services"></script>
+<script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+
+</head>
+
+<body>
+	<div class="container-xxl bg-white p-0">
+		<!-- Spinner Start -->
+		<div id="spinner"
+			class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+			<div class="spinner-border text-primary"
+				style="width: 3rem; height: 3rem;" role="status">
+				<span class="sr-only">Loading...</span>
+			</div>
+		</div>
+		<!-- Spinner End -->
+
+		<!-- navigator start -->
+		<th:block th:replace="~{fragments/navigator :: navigator}" />
+		<!-- navigator end -->
+
+		<!-- header start -->
+		<th:block th:replace="~{fragments/header :: header}" />
+		<!-- header end -->
+
+		<!-- weatherInfo -->
+		<div id="aWeather"></div>
+		<!-- weatherInfo -->
+
+
+		<!-- Property List Start -->
+		<div class="container-xxl py-5">
+			<div class="container" id="story" style="display: none">
+
+				<div class="row g-0 gx-5 align-items-end">
+					<div class="col-lg-6 ms-4">
+						<div class="text-start mx-auto mb-5 wow slideInLeft"
+							data-wow-delay="0.1s">
+							<h1 class="mb-3 text-primary">Story</h1>
+							<!-- <a id="url" href=""><h3 id="title" class="mb-3 text-primary" style="word-break: keep-all"></h3></a>
+							<h5 id="address" class="mb-4"></h5> -->
+						</div>
+					</div>
+				</div>
+
+				<div class="tab-content mx-4">
+					<div class="tab-pane fade show p-0 active" id="proplist">
+						<!-- property list와 더보기 버튼이 있던 곳 -->
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<!-- Property List End -->
+
+
+		<th:block th:replace="~{fragments/footer :: footer}" />
+
+		<!-- Back to Top -->
+		<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top">
+			<i class="bi bi-arrow-up"></i>
+		</a>
+	</div>
+
+
+	<th:block th:replace="~{fragments/footer_link :: footer_link}" />
+
+</body>
+
+</html>
+
+
+
+<!-- 카카오 맵 services 라이브러리 불러오기 => 화면에 지도를 띄움 -->
+
+<script th:inline="javascript">
+	// 마커를 클릭하면 장소 이름을 표시할 InfoWindow
+	var infowindow = new kakao.maps.InfoWindow({
+		zIndex : 1
+	});
+
+	var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+	mapOption = {
+		center : new kakao.maps.LatLng(37.450701, 126.570667), // 지도의 중심 좌표(y,x)
+		level : 13 // 지도의 확대 레벨
+	};
+
+	// 지도를 생성
+	var map = new kakao.maps.Map(mapContainer, mapOption);
+
+	// 장소 검색 객체를 생성
+	var ps = new kakao.maps.services.Places();
+
+	// 마커들을 담을 배열
+	var markers = [];
+
+	// 지도에 마커를 표시하는 함수
+	function displayMarker(place) {
+		// 마커를 생성하고 지도에 표시
+		var marker = new kakao.maps.Marker({
+			map : map,
+			position : new kakao.maps.LatLng(place.y, place.x),
+			title : place.place_name
+		});
+
+		markers.push(marker); // 생성된 마커들을 배열 markers에 저장
+
+
+		// 마커에 클릭 이벤트를 등록
+		kakao.maps.event.addListener(marker, 'click', function() {
+			console.log(marker.getPosition());
+			getStory(marker.getTitle()); // 마커를 클릭하면 getStory()를 호출 -> 매개변수로 해당 마커의 position 값(= LatLng 객체)을 전달
+		});
+
+		// 마커에 마우스오버 이벤트를 등록
+		kakao.maps.event.addListener(marker, 'mouseover', function() {
+			// 마커 위에 마우스를 올리면 장소 이름을 InfoWindow에 표시
+			infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
+			infowindow.open(map, marker);
+		});
+
+		// 마커에 마우스아웃 이벤트를 등록
+		kakao.maps.event.addListener(marker, 'mouseout', function() {
+			// 마커 위에서 마우스를 치우면 InfoWindow가 사라짐
+			infowindow.close();
+		});
+	}
+
+
+	// 기존(= 이전 키워드)의 마커들을 지우는 함수
+	function clearMarkers() {
+		for (let i = 0; i < markers.length; i++) {
+			markers[i].setMap(null); // 이전에 생성한 마커를 지도에서 제거
+		}
+		markers.length = 0; // 마커들을 담은 markers 배열 초기화
+	}
+</script>
+
+
+<script type="text/javascript">
+	let place_name;
+
+	// 마커의 LatLng 객체로부터 x, y 값을 추출 후 story()의 매개변수로 전달, story()의 실행 결과를 받아서 showStory()에게 전달
+	function getStory(data) {
+		//let latlng = position; // position == LatLng 객체
+		//let y = latlng.getLat(); // 위도 반환
+		//let x = latlng.getLng(); // 경도 반환
+		place_name = data;
+
+		story(place_name).then(result => {
+			let data = result;
+			showStory(data); // 사용자들의 스토리를 property list에 띄움
+		})
+	}
+
+
+	// 서버에서 특정 맛집에 대한 사용자들의 스토리를 가져오기
+	function story(place_name) {
+		return $.ajax({
+					url: "/weatherstory/local/place",
+					type: "get",
+					data: {
+						place_name: place_name
+					}
+				})
+				.then(
+					function(result, status, xhr) {
+						// console.log("result: ", result); // result == List<Story> 객체
+						return result;
+					}
+				);
+	}
+
+
+	// 특정 맛집에 대한 사용자들의 스토리를 property list에서 보여주기
+	function showStory(data) { // data == List<Story> 객체
+    // 사용자 이름, 스토리 컨텐츠 및 사진 표시 -> data[0].content, data[0].photo, data[0].member.nickname
+
+    // $("title").text(data[0].place_name); // 맛집 이름
+    // $("url").attr("href", data[0].place_url); // 맛집 사이트 url
+    // $("address").text(data[0].address_name); // 맛집 주소
+
+
+    let tag = "<div class=\"row g-4\">";
+
+    console.log("(showStory)data: ", data);
+
+    let div = document.getElementById('story');
+    div.style.display = '';
+
+    for (let i = 0; i < data.length; i++) { // 스토리 개수만큼 property list 생성
+       let property = data[i];
+
+       if(i == 6) { tag += "</div><div class=\"row g-4 mt-1\" id='hide' style='display: none'>"; } // 7번째 스토리부터는 display 값이 none인 div로 감싸서 보이지 않도록 하기
+
+       tag += "<div class=\"col-lg-4 col-md-6 wow fadeInUp\" data-wow-delay=\"0.1s\">"
+          + "<div class=\"property-item rounded overflow-hidden\"><div class=\"p-4 pb-0\">"
+          + "<h6 class=\"mb-3 fw-bold\">" + data[i].member.nickname + "</h6>"
+          + "<img src=/weatherstory/story_img/"+ data[i].filename  +" class=\"w-75 h-75\"><p class=\"mt-3 mb-4\">" + data[i].content + "</p>"
+          + "<button class=\"btn btn-primary py-1 px-3 mb-2\" onclick='recommend(" + data[i].story_idx +", " + i + ")'>추천 "
+          + "<span id=\""+ i + "\" >" + data[i].hit + "</span></button></div></div></div>";
+    }
+
+    tag += "</div><div class=\"col-12 text-center wow fadeInUp\"><a class=\"btn btn-primary py-3 px-5 mt-5\""
+          + " id='browse' onclick='toggleBt()'>더보기</a></div>"; // 더보기 버튼 생성(-> onclick 이벤트로 toggleBt() 호출)
+
+    $("#proplist").html(tag);
+}
+
+
+	// 7번째 이상의 propery list 스토리는 더보기 버튼을 누르면 보임
+	function toggleBt() {
+		let div = document.getElementById('hide'); // 스토리 데이터들이 숨겨져 있는 div
+
+		if(div.style.display !== 'none') { // 숨길 때는 display: none
+			div.style.display = 'none';
+			$("#browse").text("더보기"); // div 영역을 숨길 때 -> 버튼 이름을 더보기로 변경
+			$('html, body').animate({scrollTop:1500},350); // 버튼을 누르면 화면의 특정 위치로 올라감
+		} else { // 보일 때는 display 속성값 제거(display = 'block'을 하면 div row가 적용되지 않음)
+			div.style.display = '';
+			$("#browse").text("닫기");
+		}
+	}
+
+	// 추천 버튼을 한 번 누르면 hit 값(= 추천 수)을 +1, 두 번 누르면 -1
+	function recommend(story_idx, i) {
+		$.ajax({
+			url: "/weatherstory/local/hit",
+			type: "post",
+			data: {
+				story_idx: story_idx,
+				place_name: place_name // 추천 수 변경이 반영된 List<Story>를 다시 받아오기 -> place_name이 필요함
+			},
+			headers:{
+				"Authorization":"Bearer " + getToken()
+			},
+			success: function (result, status, xhr) {
+				console.log("추천하기 클릭");
+				// showStory(result); // result == List<Story> 객체 (-> 추천 수 변경이 반영된 List<Story>를 새로 띄우기)
+				console.log(result);
+				changeHit(i, result); // 화면에 표시된 추천 수 변경
+			}
+		});
+	}
+	
+	// 화면에 표시된 추천 수 변경
+	function changeHit(i, result) {
+		let index = "#" + i;
+		$(index).text(result);
+	}
+
+	// 서버에서 보낸 맛집 데이터를 지도에 표시
+	function placesSearchCB(data) {
+		if(data != null){
+			// 검색된 장소 위치를 기준으로 지도 범위를 재설정하기 위해 LatLngBounds 객체에 좌표를 추가
+			var bounds = new kakao.maps.LatLngBounds();
+	
+			for (var i = 0; i < data.length; i++) {
+				displayMarker(data[i]); // 마커 생성하기
+				bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+			}
+	
+			// 검색된 장소 위치를 기준으로 지도 범위를 재설정
+			map.setBounds(bounds);
+		}
+	}
+
+
+	// 스토리가 있는 맛집 위치를 지도에 마커로 표시, showCommend() 호출 -> property list에 반영
+	function showStore(result) {
+		console.log("result : " + result);
+
+		placesSearchCB(result); // 맛집 위치를 지도에 반영
+		showComment(result); // 맛집 스토리를 property list에 반영
+	}
+
+
+	// GetStarted 버튼을 누름 -> getStore() 호출
+	function getStart() {
+		getStore();
+	}
+
+
+	// 스토리가 있는 맛집 중 사용자 위치 근처의 맛집 데이터 목록을 가져오기
+	function getStore() {
+		$.ajax({
+			url : "/weatherstory/local/show",
+			type : "GET",
+			headers:{
+				"Authorization" : "Bearer " + getToken()
+			},
+			success : function(result, status, xhr) {
+				console.log(result);
+
+				// showStore(result);
+				// clearMarkers();
+				if(result.length != 0){
+					placesSearchCB(result); // 맛집 위치를 지도에 반영
+				}else{
+					alert('해당 지역에 등록된 스토리가 없습니다!');
+				}
+					
+			}
+		});
+	}
+	// result == 지도에 표시할 맛집의 위치 정보(= place_name, road_address_name, dong, x, y) -> List<Story> 객체는 story()를 통해 받아옴
+</script>
+<script>
+	function registStory(){
+		$.ajax({
+			url:"/weatherstory/rest/local/story",
+			type:"post",
+			headers:{
+				"Authorization" : "Bearer " + getToken()
+			},
+			success:function(result,status,xhr){
+				location.href="/weatherstory/local/story";
+			},
+			error:function(err, status, err){
+				alert('로그인 필요');
+				location.href="/weatherapp/member/loginform";
+			}
+			
+		});
+	}
+	
+	$(function(){
+		$("#bt_story").click(function(){
+			registStory();
+		});
+	});
+</script>
